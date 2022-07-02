@@ -11,22 +11,65 @@ import com.soywiz.korma.interpolation.*
 
 suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"]) {
 
-    // Basic Shapes and Images:
-//	val circle = Circle(radius = 20.0, fill = Colors.GREEN).xy(100, 100)
-//	addChild(circle)
-	// ^^ code above does the same as:
-//	circle(radius = 20.0, fill = Colors.GREEN).xy(100, 100)  // can use this syntax with shapes and views that can be added to screen
-//
-//
-//    solidRect(width = 100.0, height = 100.0, Colors.GOLD).xy(110, 110)  // the later a view is added to it's parent, the higher it is in the drawing stack
-//
-//    val bitmap = resourcesVfs["korge.png"].readBitmap()
-//    image(bitmap).scale(.3).apply {
-//       // rotation = (+50).degrees
-//        alpha = 0.5
-//    }
+// 1) Basic Shapes and Images:
 
-// Sprites and SpriteAnimations:
+        //  Circle:
+
+        //	val circle = Circle(radius = 20.0, fill = Colors.GREEN).xy(100, 100)
+        //	addChild(circle)
+	    // ^^ code above does the same as:
+        //	circle(radius = 20.0, fill = Colors.GREEN).xy(100, 100)  // can use this syntax with shapes and views that can be added to screen
+
+        //  Rectangle:
+
+        //    solidRect(width = 100.0, height = 100.0, Colors.GOLD).xy(110, 110)  // the later a view is added to it's parent, the higher it is in the drawing stack
+
+        //  Display Image:
+
+        //    val bitmap = resourcesVfs["korge.png"].readBitmap()
+        //    image(bitmap).scale(.3).apply {
+                // rotation = (+50).degrees
+                //  alpha = 0.5
+        //    }
+
+// 2) Sprites and SpriteAnimations:
+
+    val spriteMap = resourcesVfs["explosion.png"].readBitmap()
+
+    // image(spriteMap)
+
+    val explosionAnimation = SpriteAnimation(
+        spriteMap = spriteMap,
+        spriteWidth = 128, // image is 1024x1024 and it's 8x8, 1024 / 8 = 128
+        spriteHeight = 128,
+        marginTop = 0, // default
+        marginLeft = 0, // default
+        columns = 8,
+        rows = 8,
+        offsetBetweenColumns = 0, // default
+        offsetBetweenRows = 0 // default
+    )
+
+
+    val explosion = sprite(explosionAnimation)
+
+    // diff playAnimation options and parameters:
+
+    // explosion.playAnimation(times = 2)
+    // explosion.playAnimationLooped(spriteDisplayTime = 500.milliseconds)
+    // explosion.playAnimationLooped(reversed = true, startFrame = 6)
+    // explosion.playAnimationForDuration(1.seconds)
+
+    // lifecycle of animation:
+
+    // explosion.onAnimationCompleted
+    // explosion.onAnimationStarted
+    // explosion.onAnimationStopped
+
+    explosion.playAnimationLooped()
+
+// 3) Simple Collision Detection:
+
 
 
 
