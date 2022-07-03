@@ -34,24 +34,24 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
 
 // 2) Sprites and SpriteAnimations:
 
-    val spriteMap = resourcesVfs["explosion.png"].readBitmap()
+//    val spriteMap = resourcesVfs["explosion.png"].readBitmap()
 
     // image(spriteMap)
 
-    val explosionAnimation = SpriteAnimation(
-        spriteMap = spriteMap,
-        spriteWidth = 128, // image is 1024x1024 and it's 8x8, 1024 / 8 = 128
-        spriteHeight = 128,
-        marginTop = 0, // default
-        marginLeft = 0, // default
-        columns = 8,
-        rows = 8,
-        offsetBetweenColumns = 0, // default
-        offsetBetweenRows = 0 // default
-    )
-
-
-    val explosion = sprite(explosionAnimation)
+//    val explosionAnimation = SpriteAnimation(
+//        spriteMap = spriteMap,
+//        spriteWidth = 128, // image is 1024x1024 and it's 8x8, 1024 / 8 = 128
+//        spriteHeight = 128,
+//        marginTop = 0, // default
+//        marginLeft = 0, // default
+//        columns = 8,
+//        rows = 8,
+//        offsetBetweenColumns = 0, // default
+//        offsetBetweenRows = 0 // default
+//    )
+//
+//
+//    val explosion = sprite(explosionAnimation)
 
     // diff playAnimation options and parameters:
 
@@ -59,6 +59,8 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
     // explosion.playAnimationLooped(spriteDisplayTime = 500.milliseconds)
     // explosion.playAnimationLooped(reversed = true, startFrame = 6)
     // explosion.playAnimationForDuration(1.seconds)
+    // explosion.playAnimationLooped()
+
 
     // lifecycle of animation:
 
@@ -66,14 +68,38 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
     // explosion.onAnimationStarted
     // explosion.onAnimationStopped
 
-    explosion.playAnimationLooped()
+
 
 // 3) Simple Collision Detection:
 
+//    val rect1 = solidRect(100.0, 100.0, Colors.GREEN).xy(200,200)
+//    val rect2 = solidRect(100.0, 100.0, Colors.BLUE).xy(300,200)
+//
+//    val rectList = listOf(rect1, rect2)
+//
+//
+//    val circle = circle(20.0, Colors.RED)
+//
+//    circle.addUpdater {
+//        circle.fill = Colors.RED
+//        x = mouseX - circle.radius
+//        y = mouseY - circle.radius
+//
+//        if (collidesWith(rect1)) {
+//            circle.fill = Colors.VIOLET
+//        }
+//        if (collidesWith(rect2)) {
+//            circle.fill = Colors.DARKKHAKI
+//        }
+//    }
+
+    // adding the parameter {it == rect} here will filter all view collisions EXCEPT rect, calling the method on only collisions with rect
+//    circle.onCollision( { it == rect } ) {
+//        circle.fill = Colors.BLUE
+//    }
 
 
-
-
+// 4) Resolution Handling and Coordinates System
 
 }
 
