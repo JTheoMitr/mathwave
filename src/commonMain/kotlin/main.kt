@@ -3,14 +3,30 @@ import com.soywiz.korge.*
 import com.soywiz.korge.tween.*
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.Circle
+import com.soywiz.korim.atlas.readAtlas
 import com.soywiz.korim.color.*
 import com.soywiz.korim.format.*
 import com.soywiz.korio.file.std.*
 import com.soywiz.korma.geom.*
 import com.soywiz.korma.interpolation.*
 
-suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"]) {
+suspend fun main() = Korge(width = 800, height = 600, bgcolor = Colors["#2b2b2b"]) {
 
+    val adventurerSprites = resourcesVfs["adventurer.xml"].readAtlas()
+
+    // val runAnimation = adventurerSprites.getSpriteAnimation("run")
+    // val jumpAnimation = adventurerSprites.getSpriteAnimation("jump")
+    val idleAnimation = adventurerSprites.getSpriteAnimation("adventurer-idle-0")
+
+    val adventurer = sprite(idleAnimation).scale(4.0).xy(300.0, 400.0)
+    adventurer.playAnimationLooped(spriteDisplayTime = 225.milliseconds)
+
+
+}
+
+
+
+    // GETTING STARTED TUTORIALS:
 // 1) Basic Shapes and Images:
 
         //  Circle:
@@ -98,10 +114,23 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
 //        circle.fill = Colors.BLUE
 //    }
 
+//
+    // 4) AddUpdater syntax options:
 
-// 4) Resolution Handling and Coordinates System
+//val circle = circle(20.0, Colors.GOLD).xy(200, 200)
+//
+//    circle.addUpdater {
+//        // radius += 1.0
+//
+//        // x++
+//    }
+//
+//    // can also attach addUpdater directly to the stage and not the circle view:
+//        addUpdater {
+//            circle.x++
+//        }
 
-}
+
 
 
 
