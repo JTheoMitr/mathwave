@@ -1,4 +1,5 @@
 import com.soywiz.klock.*
+import com.soywiz.korev.Key
 import com.soywiz.korge.*
 import com.soywiz.korge.tween.*
 import com.soywiz.korge.view.*
@@ -12,14 +13,25 @@ import com.soywiz.korma.interpolation.*
 
 suspend fun main() = Korge(width = 800, height = 600, bgcolor = Colors["#2b2b2b"]) {
 
+    // ADVENTURER SPRITES
+
+    // Pinpoint Source Spritesheet
     val adventurerSprites = resourcesVfs["adventurer.xml"].readAtlas()
 
-    // val runAnimation = adventurerSprites.getSpriteAnimation("run")
-    // val jumpAnimation = adventurerSprites.getSpriteAnimation("jump")
+    // Animations:
+    val runAnimation = adventurerSprites.getSpriteAnimation("adventurer-run")
+    val jumpAnimation = adventurerSprites.getSpriteAnimation("adventurer-jump")
     val idleAnimation = adventurerSprites.getSpriteAnimation("adventurer-idle-0")
 
     val adventurer = sprite(idleAnimation).scale(4.0).xy(300.0, 400.0)
-    adventurer.playAnimationLooped(spriteDisplayTime = 225.milliseconds)
+    adventurer.playAnimationLooped(spriteDisplayTime = 200.milliseconds)
+    adventurer.onAnimationCompleted { adventurer.playAnimationLooped(idleAnimation) }
+
+    addUpdater {
+        if ( views.input.keys[Key.SPACE] )
+        { adventurer.playAnimation(jumpAnimation, startFrame = 0) }
+
+    }
 
 
 }
