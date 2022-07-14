@@ -31,6 +31,18 @@ suspend fun main() = Korge(width = 800, height = 600, bgcolor = Colors["#2b2b2b"
         if ( views.input.keys[Key.SPACE] )
         { adventurer.playAnimation(jumpAnimation, startFrame = 0) }
 
+        if ( views.input.keys[Key.RIGHT] ) {
+            adventurer.playAnimation(runAnimation)
+            // adventurer.x++
+            adventurer.x += 2
+        }
+
+        if ( views.input.keys[Key.LEFT] ) {
+            adventurer.playAnimation(runAnimation)
+            // adventurer.x--
+            adventurer.x -= 2
+        }
+
     }
 
 
