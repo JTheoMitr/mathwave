@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
+<!-- $TexturePacker:SmartUpdate:ab05612a10ebecd21a01424396039ad8:286303b2d33eb48818bc86d4837ba5e1:625d4d902c54b0c4b1328f5b6a77b0ba$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+pX => x pos of the pivot point (relative to sprite width)
+pY => y pos of the pivot point (relative to sprite height)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+with polygon mode enabled:
+vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
+verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
+triangles  => sprite triangulation, 3 vertex indices per triangle
+-->
+<TextureAtlas imagePath="jellyfish_two.png" width="188" height="1472">
+    <sprite n="jellyfish_1.png" x="93" y="217" w="92" h="114"/>
+    <sprite n="jellyfish_2.png" x="0" y="450" w="94" h="119"/>
+    <sprite n="jellyfish_3.png" x="94" y="569" w="93" h="119"/>
+    <sprite n="jellyfish_4.png" x="0" y="107" w="95" h="107"/>
+    <sprite n="jellyfish_5.png" x="0" y="217" w="93" h="110"/>
+    <sprite n="jellyfish_6.png" x="0" y="688" w="93" h="119"/>
+    <sprite n="jellyfish_7.png" x="0" y="943" w="94" h="128"/>
+    <sprite n="jellyfish_8.png" x="0" y="1205" w="89" h="133"/>
+    <sprite n="jellyfish_9.png" x="89" y="1205" w="92" h="133"/>
+    <sprite n="jellyfish_10.png" x="0" y="1338" w="89" h="134"/>
+    <sprite n="jellyfish_11.png" x="93" y="688" w="91" h="127"/>
+    <sprite n="jellyfish_12.png" x="94" y="943" w="87" h="129"/>
+    <sprite n="jellyfish_13.png" x="0" y="815" w="91" h="127"/>
+    <sprite n="jellyfish_14.png" x="89" y="1338" w="89" h="134"/>
+    <sprite n="jellyfish_15.png" x="0" y="1072" w="92" h="133"/>
+    <sprite n="jellyfish_16.png" x="92" y="1072" w="89" h="133"/>
+    <sprite n="jellyfish_17.png" x="91" y="815" w="94" h="128"/>
+    <sprite n="jellyfish_18.png" x="92" y="331" w="93" h="119"/>
+    <sprite n="jellyfish_19.png" x="95" y="107" w="93" h="110"/>
+    <sprite n="jellyfish_20.png" x="0" y="0" w="95" h="107"/>
+    <sprite n="jellyfish_21.png" x="94" y="450" w="93" h="119"/>
+    <sprite n="jellyfish_22.png" x="0" y="569" w="94" h="119"/>
+    <sprite n="jellyfish_23.png" x="0" y="331" w="92" h="114"/>
+</TextureAtlas>
