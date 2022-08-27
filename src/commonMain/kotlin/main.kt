@@ -1,6 +1,13 @@
 import com.soywiz.klock.*
+import com.soywiz.korau.format.AudioDecodingProps
+import com.soywiz.korau.sound.*
+import com.soywiz.korau.sound.DummySoundProps.pitch
+import com.soywiz.korev.Key
 import com.soywiz.korge.*
+import com.soywiz.korge.animate.playAndWaitEvent
+import com.soywiz.korge.animate.waitEvent
 import com.soywiz.korge.animate.waitStop
+import com.soywiz.korge.input.keys
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.scene.Module
 import com.soywiz.korge.scene.Scene
@@ -56,13 +63,8 @@ class Scene2() : Scene() {
     override suspend fun Container.sceneInit() {
 
 
-        val rect = solidRect(1024.0, 768.0, Colors["#0e2c9c"]).xy(0.0, 0.0)
+        val rect = solidRect(1024.0, 768.0, Colors["#02020bdd"]).xy(0.0, 0.0)
 
-        val retroBgnd = image(resourcesVfs["bgnd_retrowave_one.png"].readBitmap()) {
-            anchor(0.0, 0.0)
-            position(0.0, 0.0)
-            visible = true
-        }
 
         // Some Abstract Values
         val buffer = 40
@@ -74,36 +76,18 @@ class Scene2() : Scene() {
         var jellySwitchPurple = true
         var jellySwitchGreen = true
         var levelIsActive = false
+        val surferBoundary = rect.height - 90
 
         // Sprite and Animation Control
 
-        val bgndSprites = resourcesVfs["bgnd_retrowave_one-0.xml"].readAtlas()
-        val bgndAnimation = bgndSprites.getSpriteAnimation("retrowave")
-
-        val bgndSpritesTwo = resourcesVfs["bgnd_retrowave_one-1.xml"].readAtlas()
-        val bgndAnimationTwo = bgndSpritesTwo.getSpriteAnimation("retrowave")
-
-        val bgndSpritesThree = resourcesVfs["bgnd_retrowave_one-2.xml"].readAtlas()
-        val bgndAnimationThree = bgndSpritesThree.getSpriteAnimation("retrowave")
-
-        val bgndSpritesFour = resourcesVfs["bgnd_retrowave_one-3.xml"].readAtlas()
-        val bgndAnimationFour = bgndSpritesFour.getSpriteAnimation("retrowave")
-
-        val bgndSpritesFive = resourcesVfs["bgnd_retrowave_one-4.xml"].readAtlas()
-        val bgndAnimationFive = bgndSpritesFive.getSpriteAnimation("retrowave")
-
-        val bgndSpritesSix = resourcesVfs["bgnd_retrowave_one-5.xml"].readAtlas()
-        val bgndAnimationSix = bgndSpritesSix.getSpriteAnimation("retrowave")
-
-        val bgndSpritesSeven = resourcesVfs["bgnd_retrowave_one-6.xml"].readAtlas()
-        val bgndAnimationSeven = bgndSpritesSeven.getSpriteAnimation("retrowave")
-
-        val bgndSpritesEight = resourcesVfs["bgnd_retrowave_one-7.xml"].readAtlas()
-        val bgndAnimationEight = bgndSpritesEight.getSpriteAnimation("retrowave")
+        // Background and Wave
+        val bgndSprites = resourcesVfs["bgnd_space_one.xml"].readAtlas()
+        val bgndAnimation = bgndSprites.getSpriteAnimation("bgnd")
 
         val waveSprites = resourcesVfs["wave_break_demo.xml"].readAtlas()
         val breakAnimation = waveSprites.getSpriteAnimation("wave")
 
+        // Surfer
         val surferSprites = resourcesVfs["surfer_boi.xml"].readAtlas()
         val idleAnimation = surferSprites.getSpriteAnimation("surfer")
 
@@ -115,78 +99,52 @@ class Scene2() : Scene() {
         val jellyTwoSprites = resourcesVfs["jellyfish_two.xml"].readAtlas()
         val jellyTwoAnimation = jellyTwoSprites.getSpriteAnimation("jelly")
 
+        // GREEN JELLY 2
+        val jellyThreeAnimation = jellyTwoSprites.getSpriteAnimation("jelly")
+
+        // PURPLE JELLY 2
+        val jellyFourAnimation = jellyOneSprites.getSpriteAnimation("jelly")
+
         val canOneSprites = resourcesVfs["oil_can_one.xml"].readAtlas()
         val canOneAnimation = canOneSprites.getSpriteAnimation("img")
 
         val garbageBagSprites = resourcesVfs["garbage_bag_one.xml"].readAtlas()
         val garbageBagAnimation = garbageBagSprites.getSpriteAnimation("img")
 
-        // Establish vaporwave nightmare
+        // Establish Vaporwave Atmosphere
+
+        val music = resourcesVfs["neon_slide_one.wav"].readMusic()
+        music.play()
 
         val motionBgnd = sprite(bgndAnimation) {
             position(rect.width / 2, rect.height / 2)
             anchor(0.5, 0.5)
             visible = true
+            scaledHeight = 768.0
+            scaledWidth = 1024.0
+            alpha(0.6)
         }
 
-        val motionBgndTwo = sprite(bgndAnimationTwo) {
-            position(rect.width / 2, rect.height / 2)
-            anchor(0.5, 0.5)
-            visible = false
-        }
-
-        val motionBgndThree = sprite(bgndAnimationThree) {
-            position(rect.width / 2, rect.height / 2)
-            anchor(0.5, 0.5)
-            visible = false
-        }
-
-        val motionBgndFour = sprite(bgndAnimationFour) {
-            position(rect.width / 2, rect.height / 2)
-            anchor(0.5, 0.5)
-            visible = false
-        }
-
-        val motionBgndFive = sprite(bgndAnimationFive) {
-            position(rect.width / 2, rect.height / 2)
-            anchor(0.5, 0.5)
-            visible = false
-        }
-
-        val motionBgndSix = sprite(bgndAnimationSix) {
-            position(rect.width / 2, rect.height / 2)
-            anchor(0.5, 0.5)
-            visible = false
-        }
-
-        val motionBgndSeven = sprite(bgndAnimationSeven) {
-            position(rect.width / 2, rect.height / 2)
-            anchor(0.5, 0.5)
-            visible = false
-        }
-
-        val motionBgndEight = sprite(bgndAnimationEight) {
-            position(rect.width / 2, rect.height / 2)
-            anchor(0.5, 0.5)
-            visible = false
-        }
-
+        val rect2 = solidRect(1024.0, 65.0, Colors["#02020bdd"]).xy(0.0, 0.0)
 
             // Establish WaveBreak for Level Background
             val waveBreak = sprite(breakAnimation) {
                 scaledHeight = 2010.0
-                scaledWidth = 180.0
-                alpha = .7
+                scaledWidth = 290.0
+                alpha = 1.0
 
-                rotation(Angle.fromDegrees(270))
-                position(rect.width / 2, rect.height - 2)
+                rotation(Angle.fromDegrees(272)) // adjust to even out
+                position(rect.width / 2, rect.height + 15)
                 anchor(0.0, .5)
                 visible = true
             }
 
-            waveBreak.playAnimationLooped(spriteDisplayTime = 200.milliseconds)
+        waveBreak.playAnimationLooped(spriteDisplayTime = 200.milliseconds)
 
-        motionBgnd.playAnimationLooped(spriteDisplayTime = 200.milliseconds)
+        motionBgnd.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+
+
+
 
             // Add Components to the Stage
 
@@ -205,6 +163,15 @@ class Scene2() : Scene() {
                 position(rect.width - 160, 30.0)
                 visible = true
             }
+
+        // LASER
+        val laserOne = image(resourcesVfs["laser_green_one.png"].readBitmap()) {
+            anchor(.5, .5)
+            scale(.07)
+            position(rect.width / 2, 30.0)
+            rotation(Angle.fromDegrees(90))
+            visible = false
+        }
 
 
             val heartImgTwo = image(resourcesVfs["pixel_heart_one.png"].readBitmap()) {
@@ -248,7 +215,29 @@ class Scene2() : Scene() {
                 }
             }
 
+            val greenJellyThreeSchool = Array<Sprite>(1) {
+            sprite(jellyThreeAnimation) {
+                anchor(.5, .5)
+                scale(.4)
+                visible = false
+                this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+
+            }
+        }
+
+            val jellySchoolFour = Array<Sprite>(1) {
+            sprite(jellyFourAnimation) {
+                anchor(.5, .5)
+                scale(.4)
+                visible = false
+                this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+
+            }
+        }
+
             suspend fun surferMovement(clickPoint: Point) {
+
+                if (clickPoint.y <= surferBoundary) { clickPoint.y = surferBoundary }
                 surfer.tweenAsync(surfer::x[surfer.x, clickPoint.x], time = 1.5.seconds, easing = Easing.EASE)
                 surfer.tweenAsync(surfer::y[surfer.y, clickPoint.y], time = 1.5.seconds, easing = Easing.EASE)
 
@@ -353,10 +342,18 @@ class Scene2() : Scene() {
                 // waypoint.pos = target
 
                 // MOVE SURFER
+                surfer.position(surfer.x, surfer.y)
                 surferMovement(target)
 
 
             }
+
+        suspend fun laserBoi() {
+            laserOne.position(surfer.x, surfer.y)
+            laserOne.visible = true
+            laserOne.moveTo(laserOne.x, -15.0, 0.5.seconds, Easing.EASE)
+        }
+
 
             suspend fun runJelly() {
 
@@ -434,10 +431,58 @@ class Scene2() : Scene() {
 
                         //  }
                     }
+                }, async {
+                    greenJellyThreeSchool.forEach {
+                        //  if (!it.visible || it.pos.y > height) {
+                        delay((Random.nextInt(1, 2)).seconds)
+                        val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
+                        jellySwitchGreen = true
+                        it.visible = true
+                        it.position(jellyX, -5.0)
+
+                        it.addUpdater {
+                            if (surfer.collidesWith(this)) {
+                                jellySwitchGreenHit()
+                                jellySwitchGreen = false
+                                this.visible = false
+                                println("Green Jelly hits Surfer $jellyHits")
+                            }
+                        }
+
+                        it.moveTo(jellyX - 50, 400.0, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 15, height - buffer, 1.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
+
+
+                        //  }
+                    }
+                }, async {
+                    jellySchoolFour.forEach {
+                        //  if (!it.visible || it.pos.y > height) {
+                        delay((Random.nextInt(1, 2)).seconds)
+                        val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
+                        jellySwitchPurple = true
+                        it.visible = true
+                        it.position(jellyX, -5.0)
+
+                        it.addUpdater {
+                            if (surfer.collidesWith(this)) {
+                                jellySwitchPurpleHit()
+                                jellySwitchPurple = false
+                                this.visible = false
+                                println("Purple Jelly hits Surfer $jellyHits")
+                            }
+                        }
+
+                        it.moveTo(jellyX - 50, 400.0, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 15, height - buffer, 1.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
+
+
+                        //  }
+                    }
                 })
-
             }
-
 
             suspend fun jellyTimer() {
                 while (levelIsActive) {
@@ -445,53 +490,18 @@ class Scene2() : Scene() {
                 }
             }
 
+        suspend fun laserTimer() {
+            while (levelIsActive) {
+                laserBoi()
+            }
+        }
 
-//        repeat(50) {
-//            motionBgnd.playAnimation()
-//            motionBgnd.onAnimationCompleted {
-//                motionBgnd.visible = false
-//                motionBgndTwo.visible = true
-//                motionBgndTwo.playAnimation(spriteDisplayTime = 100.milliseconds)
-//                motionBgndTwo.onAnimationCompleted {
-//                    motionBgndTwo.visible = false
-//                    motionBgndThree.visible = true
-//                    motionBgndThree.playAnimation(spriteDisplayTime = 100.milliseconds)
-//                    motionBgndThree.onAnimationCompleted {
-//                        motionBgndThree.visible = false
-//                        motionBgndFour.visible = true
-//                        motionBgndFour.playAnimation(spriteDisplayTime = 100.milliseconds)
-//                        motionBgndFour.onAnimationCompleted {
-//                            motionBgndFour.visible = false
-//                            motionBgndFive.visible = true
-//                            motionBgndFive.playAnimation(spriteDisplayTime = 100.milliseconds)
-//                            motionBgndFive.onAnimationCompleted {
-//                                motionBgndFive.visible = false
-//                                motionBgndSix.visible = true
-//                                motionBgndSix.playAnimation(spriteDisplayTime = 100.milliseconds)
-//                                motionBgndSix.onAnimationCompleted {
-//                                    motionBgndSix.visible = false
-//                                    motionBgndSeven.visible = true
-//                                    motionBgndSeven.playAnimation(spriteDisplayTime = 100.milliseconds)
-//                                    motionBgndSeven.onAnimationCompleted {
-//                                        motionBgndSeven.visible = false
-//                                        motionBgndEight.visible = true
-//                                        motionBgndEight.playAnimation(spriteDisplayTime = 100.milliseconds)
-//                                        motionBgndEight.onAnimationCompleted {
-//                                            motionBgndEight.visible = false
-//                                            motionBgnd.visible = true
-//                                            println("eight")
-//                                            suspend { delay(TimeSpan(1000.0)) }
-//
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
 
+        addUpdater {
+            if (views.input.keys[Key.SPACE]) {
+                async { laserBoi() }
+            }
+        }
 
             garbageBag.onClick {
                 levelIsActive = true
