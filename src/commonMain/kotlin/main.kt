@@ -111,10 +111,11 @@ class Scene2() : Scene() {
         val garbageBagSprites = resourcesVfs["garbage_bag_one.xml"].readAtlas()
         val garbageBagAnimation = garbageBagSprites.getSpriteAnimation("img")
 
+
         // Establish Vaporwave Atmosphere
 
-        val music = resourcesVfs["neon_slide_one.wav"].readMusic()
-        music.play()
+        // val music = resourcesVfs["neon_slide_one.wav"].readMusic()
+        // music.play()
 
         val motionBgnd = sprite(bgndAnimation) {
             position(rect.width / 2, rect.height / 2)
@@ -164,16 +165,6 @@ class Scene2() : Scene() {
                 visible = true
             }
 
-        // LASER
-        val laserOne = image(resourcesVfs["laser_green_one.png"].readBitmap()) {
-            anchor(.5, .5)
-            scale(.07)
-            position(rect.width / 2, 30.0)
-            rotation(Angle.fromDegrees(90))
-            visible = false
-        }
-
-
             val heartImgTwo = image(resourcesVfs["pixel_heart_one.png"].readBitmap()) {
                 anchor(.5, .5)
                 scale(.03)
@@ -185,6 +176,37 @@ class Scene2() : Scene() {
                 scale(.03)
                 position(rect.width - 80, 30.0)
             }
+
+        // LASER
+        val laserOne = image(resourcesVfs["laser_green_one.png"].readBitmap()) {
+            anchor(.5, .5)
+            scale(.07)
+            position(rect.width / 2, 30.0)
+            rotation(Angle.fromDegrees(90))
+            visible = false
+        }
+
+        // EXPLOSION STUFF
+
+        val spriteMap = resourcesVfs["explosion.png"].readBitmap()
+
+        val explosionAnimation = SpriteAnimation(
+            spriteMap = spriteMap,
+            spriteWidth = 128, // image is 1024x1024 and it's 8x8, 1024 / 8 = 128
+            spriteHeight = 128,
+            marginTop = 0, // default
+            marginLeft = 0, // default
+            columns = 8,
+            rows = 8,
+            offsetBetweenColumns = 0, // default
+            offsetBetweenRows = 0 // default
+        )
+
+        val explosion = sprite(explosionAnimation)
+        explosion.visible = false
+        explosion.scale = 1.0
+        explosion.position(rect.width / 2, rect.height / 2)
+        explosion.playAnimationLooped()
 
             // GARBAGE BAG
             val garbageBag = image(resourcesVfs["garbage_bag_one.png"].readBitmap()) {
@@ -296,7 +318,6 @@ class Scene2() : Scene() {
                 }
             }
 
-
             fun jellySwitchGreenHit() {
                 if (jellySwitchGreen) {
                     jellyHits += 1
@@ -351,7 +372,7 @@ class Scene2() : Scene() {
         suspend fun laserBoi() {
             laserOne.position(surfer.x, surfer.y)
             laserOne.visible = true
-            laserOne.moveTo(laserOne.x, -15.0, 0.5.seconds, Easing.EASE)
+            laserOne.moveTo(laserOne.x, -25.0, 0.5.seconds, Easing.EASE)
         }
 
 
@@ -371,7 +392,10 @@ class Scene2() : Scene() {
                             if (surfer.collidesWith(this)) {
                                 jellySwitchPurpleHit()
                                 jellySwitchPurple = false
+                                explosion.position(this.x, this.y - 40)
+                                explosion.visible = true
                                 this.visible = false
+
                                 println("Purple Jelly hits Surfer $jellyHits")
                             }
                         }
@@ -419,6 +443,8 @@ class Scene2() : Scene() {
                             if (surfer.collidesWith(this)) {
                                 jellySwitchGreenHit()
                                 jellySwitchGreen = false
+                                explosion.position(this.x, this.y - 40)
+                                explosion.visible = true
                                 this.visible = false
                                 println("Green Jelly hits Surfer $jellyHits")
                             }
@@ -444,6 +470,8 @@ class Scene2() : Scene() {
                             if (surfer.collidesWith(this)) {
                                 jellySwitchGreenHit()
                                 jellySwitchGreen = false
+                                explosion.position(this.x, this.y - 40)
+                                explosion.visible = true
                                 this.visible = false
                                 println("Green Jelly hits Surfer $jellyHits")
                             }
@@ -469,6 +497,8 @@ class Scene2() : Scene() {
                             if (surfer.collidesWith(this)) {
                                 jellySwitchPurpleHit()
                                 jellySwitchPurple = false
+                                explosion.position(this.x, this.y - 40)
+                                explosion.visible = true
                                 this.visible = false
                                 println("Purple Jelly hits Surfer $jellyHits")
                             }
