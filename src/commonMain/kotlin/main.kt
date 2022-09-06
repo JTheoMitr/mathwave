@@ -1,22 +1,12 @@
 import com.soywiz.klock.*
-import com.soywiz.korau.format.AudioDecodingProps
-import com.soywiz.korau.sound.*
-import com.soywiz.korau.sound.DummySoundProps.pitch
 import com.soywiz.korev.Key
 import com.soywiz.korge.*
-import com.soywiz.korge.animate.playAndWaitEvent
-import com.soywiz.korge.animate.waitEvent
-import com.soywiz.korge.animate.waitStop
-import com.soywiz.korge.input.keys
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.scene.Module
 import com.soywiz.korge.scene.Scene
-import com.soywiz.korge.stat.Stats
 import com.soywiz.korge.time.delay
-import com.soywiz.korge.time.timers
 import com.soywiz.korge.tween.*
 import com.soywiz.korge.view.*
-import com.soywiz.korge.view.Circle
 import com.soywiz.korge.view.tween.moveTo
 import com.soywiz.korim.atlas.readAtlas
 import com.soywiz.korim.color.*
@@ -28,7 +18,6 @@ import com.soywiz.korma.geom.*
 import com.soywiz.korma.interpolation.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.cancel
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -63,6 +52,7 @@ class Scene2() : Scene() {
     override suspend fun Container.sceneInit() {
 
 
+        // Establish background field
         val rect = solidRect(1024.0, 768.0, Colors["#02020bdd"]).xy(0.0, 0.0)
 
 
@@ -80,16 +70,14 @@ class Scene2() : Scene() {
 
         // Sprite and Animation Control
 
-        // Background and Wave
-//        val bgndSprites = resourcesVfs["bgnd_space_one.xml"].readAtlas()
-//        val bgndAnimation = bgndSprites.getSpriteAnimation("bgnd")
+	    val neonTarget = image(resourcesVfs["neon_target_1.png"].readBitmap()) {
+		    rotation = maxDegrees
+		    anchor(.5, .5)
+		    scale(.085)
+		    position(256, 256)
+	    }
 
-//        val waveSprites = resourcesVfs["wave_break_demo.xml"].readAtlas()
-//        val breakAnimation = waveSprites.getSpriteAnimation("wave")
 
-        // Surfer
-        val surferSprites = resourcesVfs["surfer_boi.xml"].readAtlas()
-        val idleAnimation = surferSprites.getSpriteAnimation("surfer")
 
         // PURPLE Jellyfish
         val jellyOneSprites = resourcesVfs["jellyfish_one.xml"].readAtlas()
@@ -112,50 +100,15 @@ class Scene2() : Scene() {
         val garbageBagAnimation = garbageBagSprites.getSpriteAnimation("img")
 
 
-        // Establish Vaporwave Atmosphere
+        // Establish Music
 
-        val music = resourcesVfs["neon_slide_one.wav"].readMusic()
-        music.play()
-
-//        val motionBgnd = sprite(bgndAnimation) {
-//            position(rect.width / 2, rect.height / 2)
-//            anchor(0.5, 0.5)
-//            visible = true
-//            scaledHeight = 768.0
-//            scaledWidth = 1024.0
-//            alpha(0.6)
-//        }
-
-        val rect2 = solidRect(1024.0, 65.0, Colors["#02020bdd"]).xy(0.0, 0.0)
-
-            // Establish WaveBreak for Level Background
-//            val waveBreak = sprite(breakAnimation) {
-//                scaledHeight = 2010.0
-//                scaledWidth = 290.0
-//                alpha = 1.0
-//
-//                rotation(Angle.fromDegrees(272)) // adjust to even out
-//                position(rect.width / 2, rect.height + 15)
-//                anchor(0.0, .5)
-//                visible = true
-//            }
-
-//        waveBreak.playAnimationLooped(spriteDisplayTime = 200.milliseconds)
-
-//        motionBgnd.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+//        val music = resourcesVfs["neon_slide_one.wav"].readMusic()
+//        music.play()
 
 
-
+        val rect2 = solidRect(1024.0, 65.0, Colors["#3c436df7"]).xy(0.0, 0.0)
 
             // Add Components to the Stage
-
-            // SURFER
-            val surfer = sprite(idleAnimation) {
-                anchor(.5, .5)
-                scale(.9)
-                position(rect.width / 2, rect.height - 60)
-            }
-            surfer.playAnimationLooped(spriteDisplayTime = 200.milliseconds)
 
             // HEARTS
             val heartImgOne = image(resourcesVfs["pixel_heart_one.png"].readBitmap()) {
@@ -258,11 +211,11 @@ class Scene2() : Scene() {
             suspend fun surferMovement(clickPoint: Point) {
 
                 if (clickPoint.y <= surferBoundary) { clickPoint.y = surferBoundary }
-                surfer.tweenAsync(surfer::x[surfer.x, clickPoint.x], time = 1.5.seconds, easing = Easing.EASE)
-                surfer.tweenAsync(surfer::y[surfer.y, clickPoint.y], time = 1.5.seconds, easing = Easing.EASE)
+                neonTarget.tweenAsync(neonTarget::x[neonTarget.x, clickPoint.x], time = 1.5.seconds, easing = Easing.EASE)
+                neonTarget.tweenAsync(neonTarget::y[neonTarget.y, clickPoint.y], time = 1.5.seconds, easing = Easing.EASE)
 
-                surfer.tween(surfer::rotation[minDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-                surfer.tween(surfer::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
+                neonTarget.tween(neonTarget::rotation[minDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
+                neonTarget.tween(neonTarget::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
             }
 
 
@@ -284,7 +237,7 @@ class Scene2() : Scene() {
 
                 val levelComplete = text("Level Completed") {
                     position(centerOnStage())
-                    surfer.removeFromParent()
+                    neonTarget.removeFromParent()
                     jellySchool.forEach { it.removeFromParent() }
                     greenJellySchool.forEach { it.removeFromParent() }
                     canCluster.forEach { it.removeFromParent() }
@@ -295,7 +248,7 @@ class Scene2() : Scene() {
 
                 val gameOver = text("GAME OVER") {
                     position(centerOnStage())
-                    surfer.removeFromParent()
+                    neonTarget.removeFromParent()
                     jellySchool.forEach { it.removeFromParent() }
                     greenJellySchool.forEach { it.removeFromParent() }
                     canCluster.forEach { it.removeFromParent() }
@@ -352,27 +305,11 @@ class Scene2() : Scene() {
                 }
             }
 
-            rect.onClick {
-                // sceneContainer.changeTo<Scene1>()
-                println("clicked!")
-
-                val target = it.currentPosLocal
-                // waypoint.visible = true
-                // waypoint.pos = target
-
-                // MOVE SURFER
-                surfer.position(surfer.x, surfer.y)
-                surferMovement(target)
-
-
-            }
-
-        suspend fun laserBoi() {
-            laserOne.position(surfer.x, surfer.y)
+            suspend fun laserBoi() {
+            laserOne.position(neonTarget.x, neonTarget.y)
             laserOne.visible = true
             laserOne.moveTo(laserOne.x, -25.0, 0.5.seconds, Easing.EASE)
         }
-
 
             suspend fun runJelly() {
 
@@ -387,10 +324,10 @@ class Scene2() : Scene() {
                         it.position(jellyX, -5.0)
 
                         it.addUpdater {
-                            if (surfer.collidesWith(this)) {
+                            if (neonTarget.collidesWith(this)) {
 
-                                var collisionPosX = surfer.x - 60
-                                var collisionPosY = surfer.y - 70
+                                var collisionPosX = neonTarget.x - 60
+                                var collisionPosY = neonTarget.y - 70
                                 explosion.xy(collisionPosX, collisionPosY)
                                 println(collisionPosY)
                                 jellySwitchPurpleHit()
@@ -424,7 +361,7 @@ class Scene2() : Scene() {
                         it.position(canX, -5.0)
 
                         it.addUpdater {
-                            if (surfer.collidesWith(this)) {
+                            if (neonTarget.collidesWith(this)) {
                                 this.visible = false
                                 canSwitchHit()
                                 canSwitch = false
@@ -448,9 +385,9 @@ class Scene2() : Scene() {
                         it.position(jellyX, -5.0)
 
                         it.addUpdater {
-                            if (surfer.collidesWith(this)) {
-                                var collisionPosX = surfer.x - 60
-                                var collisionPosY = surfer.y - 70
+                            if (neonTarget.collidesWith(this)) {
+                                var collisionPosX = neonTarget.x - 60
+                                var collisionPosY = neonTarget.y - 70
                                 collisionPosX = collisionPosX
                                 collisionPosY = collisionPosY
                                 explosion.xy(collisionPosX, collisionPosY)
@@ -484,9 +421,9 @@ class Scene2() : Scene() {
                         it.position(jellyX, -5.0)
 
                         it.addUpdater {
-                            if (surfer.collidesWith(this)) {
-                                var collisionPosX = surfer.x - 60
-                                var collisionPosY = surfer.y - 70
+                            if (neonTarget.collidesWith(this)) {
+                                var collisionPosX = neonTarget.x - 60
+                                var collisionPosY = neonTarget.y - 70
                                 collisionPosX = collisionPosX
                                 collisionPosY = collisionPosY
                                 explosion.xy(collisionPosX, collisionPosY)
@@ -520,9 +457,9 @@ class Scene2() : Scene() {
                         it.position(jellyX, -5.0)
 
                         it.addUpdater {
-                            if (surfer.collidesWith(this)) {
-                                var collisionPosX = surfer.x - 60
-                                var collisionPosY = surfer.y - 70
+                            if (neonTarget.collidesWith(this)) {
+                                var collisionPosX = neonTarget.x - 60
+                                var collisionPosY = neonTarget.y - 70
                                 collisionPosX = collisionPosX
                                 collisionPosY = collisionPosY
                                 explosion.xy(collisionPosX, collisionPosY)
@@ -555,17 +492,24 @@ class Scene2() : Scene() {
                 }
             }
 
-        suspend fun laserTimer() {
-            while (levelIsActive) {
-                laserBoi()
-            }
+            rect.onClick {
+
+            println("clicked!")
+
+            val target = it.currentPosLocal
+
+            // MOVE SURFER
+            neonTarget.position(neonTarget.x, neonTarget.y)
+            surferMovement(target)
+
         }
 
+            addUpdater {
 
-        addUpdater {
             if (views.input.keys[Key.SPACE]) {
                 async { laserBoi() }
             }
+
         }
 
             garbageBag.onClick {
@@ -573,6 +517,11 @@ class Scene2() : Scene() {
                 println(levelIsActive.equals(true))
                 jellyTimer()
             }
+
+//        while (true) {
+//            neonTarget.tween(neonTarget::rotation[minDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
+//            neonTarget.tween(neonTarget::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
+//        }
 
 
         }
