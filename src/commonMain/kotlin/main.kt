@@ -81,11 +81,11 @@ class Scene2() : Scene() {
         // Sprite and Animation Control
 
         // Background and Wave
-        val bgndSprites = resourcesVfs["bgnd_space_one.xml"].readAtlas()
-        val bgndAnimation = bgndSprites.getSpriteAnimation("bgnd")
+//        val bgndSprites = resourcesVfs["bgnd_space_one.xml"].readAtlas()
+//        val bgndAnimation = bgndSprites.getSpriteAnimation("bgnd")
 
-        val waveSprites = resourcesVfs["wave_break_demo.xml"].readAtlas()
-        val breakAnimation = waveSprites.getSpriteAnimation("wave")
+//        val waveSprites = resourcesVfs["wave_break_demo.xml"].readAtlas()
+//        val breakAnimation = waveSprites.getSpriteAnimation("wave")
 
         // Surfer
         val surferSprites = resourcesVfs["surfer_boi.xml"].readAtlas()
@@ -114,35 +114,35 @@ class Scene2() : Scene() {
 
         // Establish Vaporwave Atmosphere
 
-        // val music = resourcesVfs["neon_slide_one.wav"].readMusic()
-        // music.play()
+        val music = resourcesVfs["neon_slide_one.wav"].readMusic()
+        music.play()
 
-        val motionBgnd = sprite(bgndAnimation) {
-            position(rect.width / 2, rect.height / 2)
-            anchor(0.5, 0.5)
-            visible = true
-            scaledHeight = 768.0
-            scaledWidth = 1024.0
-            alpha(0.6)
-        }
+//        val motionBgnd = sprite(bgndAnimation) {
+//            position(rect.width / 2, rect.height / 2)
+//            anchor(0.5, 0.5)
+//            visible = true
+//            scaledHeight = 768.0
+//            scaledWidth = 1024.0
+//            alpha(0.6)
+//        }
 
         val rect2 = solidRect(1024.0, 65.0, Colors["#02020bdd"]).xy(0.0, 0.0)
 
             // Establish WaveBreak for Level Background
-            val waveBreak = sprite(breakAnimation) {
-                scaledHeight = 2010.0
-                scaledWidth = 290.0
-                alpha = 1.0
+//            val waveBreak = sprite(breakAnimation) {
+//                scaledHeight = 2010.0
+//                scaledWidth = 290.0
+//                alpha = 1.0
+//
+//                rotation(Angle.fromDegrees(272)) // adjust to even out
+//                position(rect.width / 2, rect.height + 15)
+//                anchor(0.0, .5)
+//                visible = true
+//            }
 
-                rotation(Angle.fromDegrees(272)) // adjust to even out
-                position(rect.width / 2, rect.height + 15)
-                anchor(0.0, .5)
-                visible = true
-            }
+//        waveBreak.playAnimationLooped(spriteDisplayTime = 200.milliseconds)
 
-        waveBreak.playAnimationLooped(spriteDisplayTime = 200.milliseconds)
-
-        motionBgnd.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+//        motionBgnd.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
 
 
 
@@ -205,8 +205,6 @@ class Scene2() : Scene() {
         val explosion = sprite(explosionAnimation)
         explosion.visible = false
         explosion.scale = 1.0
-        explosion.position(rect.width / 2, rect.height / 2)
-        explosion.playAnimationLooped()
 
             // GARBAGE BAG
             val garbageBag = image(resourcesVfs["garbage_bag_one.png"].readBitmap()) {
@@ -390,14 +388,24 @@ class Scene2() : Scene() {
 
                         it.addUpdater {
                             if (surfer.collidesWith(this)) {
+
+                                var collisionPosX = surfer.x - 60
+                                var collisionPosY = surfer.y - 70
+                                explosion.xy(collisionPosX, collisionPosY)
+                                println(collisionPosY)
                                 jellySwitchPurpleHit()
                                 jellySwitchPurple = false
-                                explosion.position(this.x, this.y - 40)
+
                                 explosion.visible = true
                                 this.visible = false
 
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
                                 println("Purple Jelly hits Surfer $jellyHits")
                             }
+
+                            // ADD LASER PARAMS
                         }
 
                         it.moveTo(jellyX + 75, 400.0, 1.seconds, Easing.EASE_IN)
@@ -441,11 +449,20 @@ class Scene2() : Scene() {
 
                         it.addUpdater {
                             if (surfer.collidesWith(this)) {
+                                var collisionPosX = surfer.x - 60
+                                var collisionPosY = surfer.y - 70
+                                collisionPosX = collisionPosX
+                                collisionPosY = collisionPosY
+                                explosion.xy(collisionPosX, collisionPosY)
+                                println(collisionPosY)
                                 jellySwitchGreenHit()
                                 jellySwitchGreen = false
-                                explosion.position(this.x, this.y - 40)
                                 explosion.visible = true
                                 this.visible = false
+
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
                                 println("Green Jelly hits Surfer $jellyHits")
                             }
                         }
@@ -468,11 +485,20 @@ class Scene2() : Scene() {
 
                         it.addUpdater {
                             if (surfer.collidesWith(this)) {
+                                var collisionPosX = surfer.x - 60
+                                var collisionPosY = surfer.y - 70
+                                collisionPosX = collisionPosX
+                                collisionPosY = collisionPosY
+                                explosion.xy(collisionPosX, collisionPosY)
+                                println(collisionPosY)
                                 jellySwitchGreenHit()
                                 jellySwitchGreen = false
-                                explosion.position(this.x, this.y - 40)
                                 explosion.visible = true
                                 this.visible = false
+
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
                                 println("Green Jelly hits Surfer $jellyHits")
                             }
                         }
@@ -495,11 +521,20 @@ class Scene2() : Scene() {
 
                         it.addUpdater {
                             if (surfer.collidesWith(this)) {
+                                var collisionPosX = surfer.x - 60
+                                var collisionPosY = surfer.y - 70
+                                collisionPosX = collisionPosX
+                                collisionPosY = collisionPosY
+                                explosion.xy(collisionPosX, collisionPosY)
+                                println(collisionPosY)
                                 jellySwitchPurpleHit()
                                 jellySwitchPurple = false
-                                explosion.position(this.x, this.y - 40)
                                 explosion.visible = true
                                 this.visible = false
+
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
                                 println("Purple Jelly hits Surfer $jellyHits")
                             }
                         }
