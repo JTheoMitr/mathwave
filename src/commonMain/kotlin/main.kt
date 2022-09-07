@@ -73,7 +73,7 @@ class Scene2() : Scene() {
 		    rotation = maxDegrees
 		    anchor(.5, .5)
 		    scale(.085)
-		    position(256, 256)
+		    position(rect.width / 2, rect.height - 50)
 	    }
 
         // PURPLE Jellyfish
@@ -299,7 +299,7 @@ class Scene2() : Scene() {
                             else if (laserOne.collidesWith(this)) {
                                 this.visible = false
                                 jellySwitchPurple = false
-                                explosion.xy(this.x - 40, this.y - 40)
+                                explosion.xy(this.x - 50, this.y - 50)
                                 explosion.visible = true
                                 explosion.playAnimationForDuration(2.seconds)
                                 explosion.onAnimationCompleted { explosion.visible = false}
@@ -308,7 +308,7 @@ class Scene2() : Scene() {
 
                         }
 
-                        it.moveTo(jellyX + 75, 400.0, 1.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 75, 400.0, 2.seconds, Easing.EASE_IN)
                         it.moveTo(jellyX + 3, height - buffer, 1.seconds, Easing.EASE_IN)
                         it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
 
