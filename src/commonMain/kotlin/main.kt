@@ -76,6 +76,10 @@ class Scene2() : Scene() {
 		    position(rect.width / 2, rect.height - 50)
 	    }
 
+        // Red Triangle 1
+        val redTriangleOne = resourcesVfs["red_tri_complete.xml"].readAtlas()
+        val triangleOneAnimation = redTriangleOne.getSpriteAnimation("neon")
+
         // PURPLE Jellyfish
         val jellyOneSprites = resourcesVfs["jellyfish_one.xml"].readAtlas()
         val jellyOneAnimation = jellyOneSprites.getSpriteAnimation("jelly")
@@ -162,6 +166,17 @@ class Scene2() : Scene() {
                     visible = false
                     this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
 
+                }
+            }
+
+            // RED TRIANGLE
+
+            val redTriangleGroupOne = Array<Sprite>(1) {
+                sprite(triangleOneAnimation) {
+                    anchor(.5, .5)
+                    scale(.3)
+                    visible = false
+                    this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
                 }
             }
 
@@ -269,7 +284,7 @@ class Scene2() : Scene() {
 
                 println("JELLYS RUNNING")
                 awaitAll(async {
-                    jellySchool.forEach {
+                    redTriangleGroupOne.forEach {
                         // if (!it.visible || it.pos.y > height) {
                         delay((Random.nextInt(1, 3)).seconds)
                         val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
@@ -309,7 +324,9 @@ class Scene2() : Scene() {
                         }
 
                         it.moveTo(jellyX + 75, 400.0, 2.seconds, Easing.EASE_IN)
-                        it.moveTo(jellyX + 3, height - buffer, 1.seconds, Easing.EASE_IN)
+                        it.tween(it::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
+                        it.moveTo(jellyX + 3, height - buffer, 500.milliseconds, Easing.EASE_IN)
+                        it.tween(it::rotation[minDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
                         it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
 
                     }
@@ -346,7 +363,7 @@ class Scene2() : Scene() {
                         async { runJelly() },
                         async {
                             neonTarget.tween(neonTarget::rotation[minDegrees], time = 3.seconds, easing = Easing.EASE_IN_OUT)
-                            neonTarget.tween(neonTarget::rotation[maxDegrees], time = 2.seconds, easing = Easing.EASE_IN_OUT) }
+                            neonTarget.tween(neonTarget::rotation[maxDegrees], time = 3.seconds, easing = Easing.EASE_IN_OUT) }
                     )
                 }
             }
