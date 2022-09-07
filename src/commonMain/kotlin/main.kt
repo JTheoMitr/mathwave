@@ -38,7 +38,7 @@ class Scene1() : Scene() {
     override suspend fun Container.sceneInit() {
         val bg = solidRect(1024.0, 768.0, Colors["#02020bdd"]).xy(1024.0, 768.0)
 
-        val title = text("START GAME", alignment = TextAlignment.CENTER).xy(IPoint.invoke(bg.width / 2, bg.height / 2 ))
+        val title = text("START GAME", alignment = TextAlignment.CENTER, textSize = 30.0).xy(IPoint.invoke(bg.width / 2, bg.height / 2 ))
 
         title.onClick {
             sceneContainer.changeTo<Scene2>()
@@ -51,15 +51,13 @@ class Scene1() : Scene() {
 class Scene2() : Scene() {
     override suspend fun Container.sceneInit() {
 
-
         // Establish background field
         val rect = solidRect(1024.0, 768.0, Colors["#02020bdd"]).xy(0.0, 0.0)
 
-
         // Some Abstract Values
         val buffer = 40
-        val minDegrees = (-16).degrees
-        val maxDegrees = (+16).degrees
+        val minDegrees = (-110).degrees
+        val maxDegrees = (+90).degrees
         var jellyHits = 0
         var garbagePickUps = 0
         var canSwitch = true
@@ -68,8 +66,9 @@ class Scene2() : Scene() {
         var levelIsActive = false
         val surferBoundary = rect.height - 90
 
-        // Sprite and Animation Control
+        // SPRITES AND IMAGES
 
+        // Target
 	    val neonTarget = image(resourcesVfs["neon_target_1.png"].readBitmap()) {
 		    rotation = maxDegrees
 		    anchor(.5, .5)
@@ -77,21 +76,9 @@ class Scene2() : Scene() {
 		    position(256, 256)
 	    }
 
-
-
         // PURPLE Jellyfish
         val jellyOneSprites = resourcesVfs["jellyfish_one.xml"].readAtlas()
         val jellyOneAnimation = jellyOneSprites.getSpriteAnimation("jelly")
-
-        // GREEN Jellyfish
-        val jellyTwoSprites = resourcesVfs["jellyfish_two.xml"].readAtlas()
-        val jellyTwoAnimation = jellyTwoSprites.getSpriteAnimation("jelly")
-
-        // GREEN JELLY 2
-        val jellyThreeAnimation = jellyTwoSprites.getSpriteAnimation("jelly")
-
-        // PURPLE JELLY 2
-        val jellyFourAnimation = jellyOneSprites.getSpriteAnimation("jelly")
 
         val canOneSprites = resourcesVfs["oil_can_one.xml"].readAtlas()
         val canOneAnimation = canOneSprites.getSpriteAnimation("img")
@@ -99,16 +86,16 @@ class Scene2() : Scene() {
         val garbageBagSprites = resourcesVfs["garbage_bag_one.xml"].readAtlas()
         val garbageBagAnimation = garbageBagSprites.getSpriteAnimation("img")
 
-
         // Establish Music
 
 //        val music = resourcesVfs["neon_slide_one.wav"].readMusic()
 //        music.play()
 
 
-        val rect2 = solidRect(1024.0, 65.0, Colors["#3c436df7"]).xy(0.0, 0.0)
-
             // Add Components to the Stage
+
+            // Banner
+            val rect2 = solidRect(1024.0, 65.0, Colors["#3c436df7"]).xy(0.0, 0.0)
 
             // HEARTS
             val heartImgOne = image(resourcesVfs["pixel_heart_one.png"].readBitmap()) {
@@ -130,20 +117,20 @@ class Scene2() : Scene() {
                 position(rect.width - 80, 30.0)
             }
 
-        // LASER
-        val laserOne = image(resourcesVfs["laser_green_one.png"].readBitmap()) {
+            // LASER
+            val laserOne = image(resourcesVfs["laser_green_one.png"].readBitmap()) {
             anchor(.5, .5)
             scale(.07)
             position(rect.width / 2, 30.0)
             rotation(Angle.fromDegrees(90))
             visible = false
-        }
+            }
 
-        // EXPLOSION STUFF
+            // EXPLOSION STUFF
 
-        val spriteMap = resourcesVfs["explosion.png"].readBitmap()
+            val spriteMap = resourcesVfs["explosion.png"].readBitmap()
 
-        val explosionAnimation = SpriteAnimation(
+            val explosionAnimation = SpriteAnimation(
             spriteMap = spriteMap,
             spriteWidth = 128, // image is 1024x1024 and it's 8x8, 1024 / 8 = 128
             spriteHeight = 128,
@@ -153,11 +140,11 @@ class Scene2() : Scene() {
             rows = 8,
             offsetBetweenColumns = 0, // default
             offsetBetweenRows = 0 // default
-        )
+            )
 
-        val explosion = sprite(explosionAnimation)
-        explosion.visible = false
-        explosion.scale = 1.0
+            val explosion = sprite(explosionAnimation)
+            explosion.visible = false
+            explosion.scale = 1.0
 
             // GARBAGE BAG
             val garbageBag = image(resourcesVfs["garbage_bag_one.png"].readBitmap()) {
@@ -178,44 +165,13 @@ class Scene2() : Scene() {
                 }
             }
 
-            val greenJellySchool = Array<Sprite>(1) {
-                sprite(jellyTwoAnimation) {
-                    anchor(.5, .5)
-                    scale(.4)
-                    visible = false
-                    this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
 
-                }
-            }
-
-            val greenJellyThreeSchool = Array<Sprite>(1) {
-            sprite(jellyThreeAnimation) {
-                anchor(.5, .5)
-                scale(.4)
-                visible = false
-                this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
-
-            }
-        }
-
-            val jellySchoolFour = Array<Sprite>(1) {
-            sprite(jellyFourAnimation) {
-                anchor(.5, .5)
-                scale(.4)
-                visible = false
-                this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
-
-            }
-        }
-
-            suspend fun surferMovement(clickPoint: Point) {
+            suspend fun targetMovement(clickPoint: Point) {
 
                 if (clickPoint.y <= surferBoundary) { clickPoint.y = surferBoundary }
                 neonTarget.tweenAsync(neonTarget::x[neonTarget.x, clickPoint.x], time = 1.5.seconds, easing = Easing.EASE)
                 neonTarget.tweenAsync(neonTarget::y[neonTarget.y, clickPoint.y], time = 1.5.seconds, easing = Easing.EASE)
 
-                neonTarget.tween(neonTarget::rotation[minDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-                neonTarget.tween(neonTarget::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
             }
 
 
@@ -239,7 +195,6 @@ class Scene2() : Scene() {
                     position(centerOnStage())
                     neonTarget.removeFromParent()
                     jellySchool.forEach { it.removeFromParent() }
-                    greenJellySchool.forEach { it.removeFromParent() }
                     canCluster.forEach { it.removeFromParent() }
                 }
             }
@@ -250,7 +205,6 @@ class Scene2() : Scene() {
                     position(centerOnStage())
                     neonTarget.removeFromParent()
                     jellySchool.forEach { it.removeFromParent() }
-                    greenJellySchool.forEach { it.removeFromParent() }
                     canCluster.forEach { it.removeFromParent() }
                 }
             }
@@ -324,7 +278,7 @@ class Scene2() : Scene() {
                         it.position(jellyX, -5.0)
 
                         it.addUpdater {
-                            if (neonTarget.collidesWith(this)) {
+                            if (neonTarget.collidesWith(this) && jellySwitchPurple) {
 
                                 var collisionPosX = neonTarget.x - 60
                                 var collisionPosY = neonTarget.y - 70
@@ -342,14 +296,22 @@ class Scene2() : Scene() {
                                 println("Purple Jelly hits Surfer $jellyHits")
                             }
 
-                            // ADD LASER PARAMS
+                            else if (laserOne.collidesWith(this)) {
+                                this.visible = false
+                                jellySwitchPurple = false
+                                explosion.xy(this.x - 40, this.y - 40)
+                                explosion.visible = true
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
+                            }
+
                         }
 
                         it.moveTo(jellyX + 75, 400.0, 1.seconds, Easing.EASE_IN)
                         it.moveTo(jellyX + 3, height - buffer, 1.seconds, Easing.EASE_IN)
                         it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
 
-                        //  }
                     }
                 }, async {
                     canCluster.forEach {
@@ -375,120 +337,17 @@ class Scene2() : Scene() {
 
                         //  }
                     }
-                }, async {
-                    greenJellySchool.forEach {
-                        //  if (!it.visible || it.pos.y > height) {
-                        delay((Random.nextInt(1, 2)).seconds)
-                        val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
-                        jellySwitchGreen = true
-                        it.visible = true
-                        it.position(jellyX, -5.0)
-
-                        it.addUpdater {
-                            if (neonTarget.collidesWith(this)) {
-                                var collisionPosX = neonTarget.x - 60
-                                var collisionPosY = neonTarget.y - 70
-                                collisionPosX = collisionPosX
-                                collisionPosY = collisionPosY
-                                explosion.xy(collisionPosX, collisionPosY)
-                                println(collisionPosY)
-                                jellySwitchGreenHit()
-                                jellySwitchGreen = false
-                                explosion.visible = true
-                                this.visible = false
-
-                                explosion.playAnimationForDuration(2.seconds)
-                                explosion.onAnimationCompleted { explosion.visible = false}
-
-                                println("Green Jelly hits Surfer $jellyHits")
-                            }
-                        }
-
-                        it.moveTo(jellyX - 50, 400.0, 2.seconds, Easing.EASE_IN)
-                        it.moveTo(jellyX + 15, height - buffer, 1.seconds, Easing.EASE_IN)
-                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
-
-
-                        //  }
-                    }
-                }, async {
-                    greenJellyThreeSchool.forEach {
-                        //  if (!it.visible || it.pos.y > height) {
-                        delay((Random.nextInt(1, 2)).seconds)
-                        val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
-                        jellySwitchGreen = true
-                        it.visible = true
-                        it.position(jellyX, -5.0)
-
-                        it.addUpdater {
-                            if (neonTarget.collidesWith(this)) {
-                                var collisionPosX = neonTarget.x - 60
-                                var collisionPosY = neonTarget.y - 70
-                                collisionPosX = collisionPosX
-                                collisionPosY = collisionPosY
-                                explosion.xy(collisionPosX, collisionPosY)
-                                println(collisionPosY)
-                                jellySwitchGreenHit()
-                                jellySwitchGreen = false
-                                explosion.visible = true
-                                this.visible = false
-
-                                explosion.playAnimationForDuration(2.seconds)
-                                explosion.onAnimationCompleted { explosion.visible = false}
-
-                                println("Green Jelly hits Surfer $jellyHits")
-                            }
-                        }
-
-                        it.moveTo(jellyX - 50, 400.0, 2.seconds, Easing.EASE_IN)
-                        it.moveTo(jellyX + 15, height - buffer, 1.seconds, Easing.EASE_IN)
-                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
-
-
-                        //  }
-                    }
-                }, async {
-                    jellySchoolFour.forEach {
-                        //  if (!it.visible || it.pos.y > height) {
-                        delay((Random.nextInt(1, 2)).seconds)
-                        val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
-                        jellySwitchPurple = true
-                        it.visible = true
-                        it.position(jellyX, -5.0)
-
-                        it.addUpdater {
-                            if (neonTarget.collidesWith(this)) {
-                                var collisionPosX = neonTarget.x - 60
-                                var collisionPosY = neonTarget.y - 70
-                                collisionPosX = collisionPosX
-                                collisionPosY = collisionPosY
-                                explosion.xy(collisionPosX, collisionPosY)
-                                println(collisionPosY)
-                                jellySwitchPurpleHit()
-                                jellySwitchPurple = false
-                                explosion.visible = true
-                                this.visible = false
-
-                                explosion.playAnimationForDuration(2.seconds)
-                                explosion.onAnimationCompleted { explosion.visible = false}
-
-                                println("Purple Jelly hits Surfer $jellyHits")
-                            }
-                        }
-
-                        it.moveTo(jellyX - 50, 400.0, 2.seconds, Easing.EASE_IN)
-                        it.moveTo(jellyX + 15, height - buffer, 1.seconds, Easing.EASE_IN)
-                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
-
-
-                        //  }
-                    }
                 })
             }
 
             suspend fun jellyTimer() {
                 while (levelIsActive) {
-                    runJelly()
+                    awaitAll(
+                        async { runJelly() },
+                        async {
+                            neonTarget.tween(neonTarget::rotation[minDegrees], time = 3.seconds, easing = Easing.EASE_IN_OUT)
+                            neonTarget.tween(neonTarget::rotation[maxDegrees], time = 2.seconds, easing = Easing.EASE_IN_OUT) }
+                    )
                 }
             }
 
@@ -500,7 +359,7 @@ class Scene2() : Scene() {
 
             // MOVE SURFER
             neonTarget.position(neonTarget.x, neonTarget.y)
-            surferMovement(target)
+            targetMovement(target)
 
         }
 
@@ -517,33 +376,5 @@ class Scene2() : Scene() {
                 println(levelIsActive.equals(true))
                 jellyTimer()
             }
-
-//        while (true) {
-//            neonTarget.tween(neonTarget::rotation[minDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-//            neonTarget.tween(neonTarget::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-//        }
-
-
         }
-
 }
-
-
-
-
-// Hello World Sample Code (was inside main function):
-
-//	val minDegrees = (-16).degrees
-//	val maxDegrees = (+16).degrees
-//
-//	val image = image(resourcesVfs["korge.png"].readBitmap()) {
-//		rotation = maxDegrees
-//		anchor(.5, .5)
-//		scale(.8)
-//		position(256, 256)
-//	}
-//
-//	while (true) {
-//		image.tween(image::rotation[minDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-//		image.tween(image::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-//	}
