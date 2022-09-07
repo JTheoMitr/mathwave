@@ -189,6 +189,24 @@ class Scene2() : Scene() {
                 }
             }
 
+            val redTriangleGroupThree = Array<Sprite>(1) {
+                sprite(triangleOneAnimation) {
+                    anchor(.5, .5)
+                    scale(.3)
+                    visible = false
+                    this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+                }
+            }
+
+            val redTriangleGroupFour = Array<Sprite>(1) {
+                sprite(triangleOneAnimation) {
+                    anchor(.5, .5)
+                    scale(.3)
+                    visible = false
+                    this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+                }
+            }
+
 
             suspend fun targetMovement(clickPoint: Point) {
 
@@ -332,9 +350,9 @@ class Scene2() : Scene() {
 
                         }
 
-                        it.moveTo(jellyX + 75, 400.0, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 75, 700.0, 2.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-                        it.moveTo(jellyX + 3, height - buffer, 500.milliseconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 3, height - 25, 1000.milliseconds, Easing.EASE_IN)
                         it.tween(it::rotation[minDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
                         it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
 
@@ -379,11 +397,105 @@ class Scene2() : Scene() {
 
                         }
 
+                        it.moveTo(jellyX + 75, 400.0, 2.seconds, Easing.EASE_IN)
+                        it.tween(it::rotation[maxDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
+                        it.moveTo(jellyX + 3, height - 73, 2.seconds, Easing.EASE_IN)
+                        it.tween(it::rotation[minDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
+                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
+
+                    }
+                }, async {
+                    redTriangleGroupThree.forEach {
+                        // if (!it.visible || it.pos.y > height) {
+                        delay((Random.nextInt(1, 3)).seconds)
+                        val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
+                        jellySwitchPurple = true
+                        it.visible = true
+                        it.position(jellyX, -5.0)
+
+                        it.addUpdater {
+                            if (neonTarget.collidesWith(this) && jellySwitchPurple) {
+
+                                var collisionPosX = neonTarget.x - 60
+                                var collisionPosY = neonTarget.y - 70
+                                explosion.xy(collisionPosX, collisionPosY)
+                                println(collisionPosY)
+                                jellySwitchPurpleHit()
+                                jellySwitchPurple = false
+
+                                explosion.visible = true
+                                this.visible = false
+
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
+                                println("Purple Jelly hits Surfer $jellyHits")
+                            }
+
+                            else if (laserOne.collidesWith(this)) {
+                                this.visible = false
+                                jellySwitchPurple = false
+                                explosion.xy(this.x - 50, this.y - 50)
+                                explosion.visible = true
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
+                            }
+
+                        }
+
+                        it.moveTo(jellyX + 75, 300.0, 3.seconds, Easing.EASE_IN)
+                        it.tween(it::rotation[maxDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
+                        it.moveTo(jellyX + 3, height - buffer, 2.seconds, Easing.EASE_IN)
+                        it.tween(it::rotation[minDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
+                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
+
+                    }
+                }, async {
+                    redTriangleGroupFour.forEach {
+                        // if (!it.visible || it.pos.y > height) {
+                        delay((Random.nextInt(1, 3)).seconds)
+                        val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
+                        jellySwitchPurple = true
+                        it.visible = true
+                        it.position(jellyX, -5.0)
+
+                        it.addUpdater {
+                            if (neonTarget.collidesWith(this) && jellySwitchPurple) {
+
+                                var collisionPosX = neonTarget.x - 60
+                                var collisionPosY = neonTarget.y - 70
+                                explosion.xy(collisionPosX, collisionPosY)
+                                println(collisionPosY)
+                                jellySwitchPurpleHit()
+                                jellySwitchPurple = false
+
+                                explosion.visible = true
+                                this.visible = false
+
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
+                                println("Purple Jelly hits Surfer $jellyHits")
+                            }
+
+                            else if (laserOne.collidesWith(this)) {
+                                this.visible = false
+                                jellySwitchPurple = false
+                                explosion.xy(this.x - 50, this.y - 50)
+                                explosion.visible = true
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
+                            }
+
+                        }
+
                         it.moveTo(jellyX + 75, 400.0, 3.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[maxDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
                         it.moveTo(jellyX + 3, height - buffer, 1.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[minDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
-                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 30, height + buffer, 2.seconds, Easing.EASE_IN)
 
                     }
                 }, async {
