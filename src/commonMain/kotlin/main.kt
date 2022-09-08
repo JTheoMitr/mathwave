@@ -1,4 +1,5 @@
 import com.soywiz.klock.*
+import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
 import com.soywiz.korge.*
 import com.soywiz.korge.input.onClick
@@ -80,20 +81,22 @@ class Scene2() : Scene() {
         val redTriangleOne = resourcesVfs["red_tri_complete.xml"].readAtlas()
         val triangleOneAnimation = redTriangleOne.getSpriteAnimation("neon")
 
-        // PURPLE Jellyfish
-        val jellyOneSprites = resourcesVfs["jellyfish_one.xml"].readAtlas()
-        val jellyOneAnimation = jellyOneSprites.getSpriteAnimation("jelly")
+        // Red Skull 1
+        val redSkullOne = resourcesVfs["red_skull.xml"].readAtlas()
+        val redSkullOneAnimation = redSkullOne.getSpriteAnimation("red")
 
+        // Can
         val canOneSprites = resourcesVfs["oil_can_one.xml"].readAtlas()
         val canOneAnimation = canOneSprites.getSpriteAnimation("img")
 
+        //Bag
         val garbageBagSprites = resourcesVfs["garbage_bag_one.xml"].readAtlas()
         val garbageBagAnimation = garbageBagSprites.getSpriteAnimation("img")
 
         // Establish Music
 
-//        val music = resourcesVfs["neon_slide_one.wav"].readMusic()
-//        music.play()
+        val music = resourcesVfs["neon_slide_one.wav"].readMusic()
+        music.play()
 
 
             // Add Components to the Stage
@@ -157,19 +160,7 @@ class Scene2() : Scene() {
                 position(rect.width - 80, rect.height - 60)
             }
 
-            // JELLYFISH
-
-            val jellySchool = Array<Sprite>(1) {
-                sprite(jellyOneAnimation) {
-                    anchor(.5, .5)
-                    scale(.4)
-                    visible = false
-                    this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
-
-                }
-            }
-
-            // RED TRIANGLE
+            // RED TRIANGLES
 
             val redTriangleGroupOne = Array<Sprite>(1) {
                 sprite(triangleOneAnimation) {
@@ -207,6 +198,26 @@ class Scene2() : Scene() {
                 }
             }
 
+        // Red Skulls
+
+        val redSkullGroupOne = Array<Sprite>(1) {
+            sprite(redSkullOneAnimation) {
+                anchor(.5, .5)
+                scale(.15)
+                visible = false
+                this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+            }
+        }
+
+        val redSkullGroupTwo = Array<Sprite>(1) {
+            sprite(redSkullOneAnimation) {
+                anchor(.5, .5)
+                scale(.15)
+                visible = false
+                this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+            }
+        }
+
 
             suspend fun targetMovement(clickPoint: Point) {
 
@@ -236,7 +247,6 @@ class Scene2() : Scene() {
                 val levelComplete = text("Level Completed") {
                     position(centerOnStage())
                     neonTarget.removeFromParent()
-                    jellySchool.forEach { it.removeFromParent() }
                     canCluster.forEach { it.removeFromParent() }
                 }
             }
@@ -246,7 +256,6 @@ class Scene2() : Scene() {
                 val gameOver = text("GAME OVER") {
                     position(centerOnStage())
                     neonTarget.removeFromParent()
-                    jellySchool.forEach { it.removeFromParent() }
                     canCluster.forEach { it.removeFromParent() }
                 }
             }
@@ -499,6 +508,96 @@ class Scene2() : Scene() {
 
                     }
                 }, async {
+                    redSkullGroupOne.forEach {
+                        // if (!it.visible || it.pos.y > height) {
+                        delay((Random.nextInt(1, 3)).seconds)
+                        val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
+                        jellySwitchPurple = true
+                        it.visible = true
+                        it.position(jellyX, -5.0)
+
+                        it.addUpdater {
+                            if (neonTarget.collidesWith(this) && jellySwitchPurple) {
+
+                                var collisionPosX = neonTarget.x - 60
+                                var collisionPosY = neonTarget.y - 70
+                                explosion.xy(collisionPosX, collisionPosY)
+                                println(collisionPosY)
+                                jellySwitchPurpleHit()
+                                jellySwitchPurple = false
+
+                                explosion.visible = true
+                                this.visible = false
+
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
+                                println("Purple Jelly hits Surfer $jellyHits")
+                            }
+
+                            else if (laserOne.collidesWith(this)) {
+                                this.visible = false
+                                jellySwitchPurple = false
+                                explosion.xy(this.x - 50, this.y - 50)
+                                explosion.visible = true
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
+                            }
+
+                        }
+
+                        it.moveTo(jellyX + 75, 400.0, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 3, height - 73, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
+
+                    }
+                }, async {
+                    redSkullGroupTwo.forEach {
+                        // if (!it.visible || it.pos.y > height) {
+                        delay((Random.nextInt(1, 3)).seconds)
+                        val jellyX = Random.nextInt(buffer, (width.toInt() - buffer)).toDouble()
+                        jellySwitchPurple = true
+                        it.visible = true
+                        it.position(jellyX, -5.0)
+
+                        it.addUpdater {
+                            if (neonTarget.collidesWith(this) && jellySwitchPurple) {
+
+                                var collisionPosX = neonTarget.x - 60
+                                var collisionPosY = neonTarget.y - 70
+                                explosion.xy(collisionPosX, collisionPosY)
+                                println(collisionPosY)
+                                jellySwitchPurpleHit()
+                                jellySwitchPurple = false
+
+                                explosion.visible = true
+                                this.visible = false
+
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
+                                println("Purple Jelly hits Surfer $jellyHits")
+                            }
+
+                            else if (laserOne.collidesWith(this)) {
+                                this.visible = false
+                                jellySwitchPurple = false
+                                explosion.xy(this.x - 50, this.y - 50)
+                                explosion.visible = true
+                                explosion.playAnimationForDuration(2.seconds)
+                                explosion.onAnimationCompleted { explosion.visible = false}
+
+                            }
+
+                        }
+
+                        it.moveTo(jellyX + 75, 400.0, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 3, height - 73, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
+
+                    }
+                } ,async {
                     canCluster.forEach {
                         //  if (!it.visible || it.pos.y > height) {
                         delay((Random.nextInt(1, 2)).seconds)
@@ -520,7 +619,6 @@ class Scene2() : Scene() {
 
                         it.moveTo(canX, height + buffer, 3.seconds, Easing.EASE_IN)
 
-                        //  }
                     }
                 })
             }
