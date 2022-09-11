@@ -65,7 +65,7 @@ class Scene2() : Scene() {
         var jellySwitchPurple = true
         var jellySwitchGreen = true
         var levelIsActive = false
-        val surferBoundary = rect.height - 90
+        val surferBoundary = rect.height - 130
 
         // SPRITES AND IMAGES
 
@@ -124,6 +124,7 @@ class Scene2() : Scene() {
                 position(rect.width - 80, 30.0)
             }
 
+
             // LASER
             val laserOne = image(resourcesVfs["laser_green_one.png"].readBitmap()) {
             anchor(.5, .5)
@@ -153,12 +154,6 @@ class Scene2() : Scene() {
             explosion.visible = false
             explosion.scale = 1.0
 
-            // GARBAGE BAG
-            val garbageBag = image(resourcesVfs["garbage_bag_one.png"].readBitmap()) {
-                anchor(.5, .5)
-                scale(.1)
-                position(rect.width - 80, rect.height - 60)
-            }
 
             // RED TRIANGLES
 
@@ -217,28 +212,44 @@ class Scene2() : Scene() {
                 this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
             }
         }
+        // CAN CLUSTER
+
+        val canCluster = Array<Sprite>(1) {
+            sprite(canOneAnimation) {
+                anchor(.5, .5)
+                scale(.2)
+                visible = false
+                this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
+
+            }
+        }
+
+
+        // FRAME
+
+        val screenFrame = image(resourcesVfs["pixel_frame_one.png"].readBitmap()) {
+            anchor(.5, .5)
+            scale(1.3)
+            position((rect.width / 2) + 10, (rect.height / 2) - 25)
+        }
+
+        // GARBAGE BAG
+        val garbageBag = image(resourcesVfs["garbage_bag_one.png"].readBitmap()) {
+            anchor(.5, .5)
+            scale(.1)
+            position(rect.width - 80, rect.height - 60)
+        }
 
 
             suspend fun targetMovement(clickPoint: Point) {
 
                 if (clickPoint.y <= surferBoundary) { clickPoint.y = surferBoundary }
+                if (clickPoint.y >= surferBoundary) { clickPoint.y = surferBoundary }
                 neonTarget.tweenAsync(neonTarget::x[neonTarget.x, clickPoint.x], time = 1.5.seconds, easing = Easing.EASE)
                 neonTarget.tweenAsync(neonTarget::y[neonTarget.y, clickPoint.y], time = 1.5.seconds, easing = Easing.EASE)
 
             }
 
-
-            // CAN CLUSTER
-
-            val canCluster = Array<Sprite>(1) {
-                sprite(canOneAnimation) {
-                    anchor(.5, .5)
-                    scale(.2)
-                    visible = false
-                    this.playAnimationLooped(spriteDisplayTime = 90.milliseconds)
-
-                }
-            }
 
             // Level Functions
 
@@ -360,8 +371,8 @@ class Scene2() : Scene() {
                         }
 
                         it.moveTo(jellyX + 75, 700.0, 2.seconds, Easing.EASE_IN)
-                        it.tween(it::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-                        it.moveTo(jellyX + 3, height - 25, 1000.milliseconds, Easing.EASE_IN)
+                        it.tween(it::rotation[maxDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
+                        it.moveTo(jellyX + 3, height - 25, 2.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[minDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
                         it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
 
@@ -406,7 +417,7 @@ class Scene2() : Scene() {
 
                         }
 
-                        it.moveTo(jellyX + 75, 400.0, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 75, 400.0, 3.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[maxDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
                         it.moveTo(jellyX + 3, height - 73, 2.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[minDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
@@ -455,7 +466,7 @@ class Scene2() : Scene() {
 
                         it.moveTo(jellyX + 75, 300.0, 3.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[maxDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
-                        it.moveTo(jellyX + 3, height - buffer, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 3, height - buffer, 3.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[minDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
                         it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
 
@@ -500,9 +511,9 @@ class Scene2() : Scene() {
 
                         }
 
-                        it.moveTo(jellyX + 75, 400.0, 3.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 75, 400.0, 2.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[maxDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
-                        it.moveTo(jellyX + 3, height - buffer, 1.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 3, height - buffer, 2.seconds, Easing.EASE_IN)
                         it.tween(it::rotation[minDegrees], time = 500.milliseconds, easing = Easing.EASE_IN_OUT)
                         it.moveTo(jellyX + 30, height + buffer, 2.seconds, Easing.EASE_IN)
 
@@ -592,12 +603,12 @@ class Scene2() : Scene() {
 
                         }
 
-                        it.moveTo(jellyX + 75, 400.0, 2.seconds, Easing.EASE_IN)
+                        it.moveTo(jellyX + 75, 400.0, 3.seconds, Easing.EASE_IN)
                         it.moveTo(jellyX + 3, height - 73, 2.seconds, Easing.EASE_IN)
                         it.moveTo(jellyX + 30, height + buffer, 1.seconds, Easing.EASE_IN)
 
                     }
-                } ,async {
+                }, async {
                     canCluster.forEach {
                         //  if (!it.visible || it.pos.y > height) {
                         delay((Random.nextInt(1, 2)).seconds)
@@ -617,7 +628,7 @@ class Scene2() : Scene() {
                             }
                         }
 
-                        it.moveTo(canX, height + buffer, 3.seconds, Easing.EASE_IN)
+                        it.moveTo(canX, height + buffer, 7.seconds, Easing.EASE_IN)
 
                     }
                 })
